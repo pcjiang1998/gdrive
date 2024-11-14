@@ -28,7 +28,12 @@ jobs:
 
       - name: Build application for aarch64
         run: |
-          docker run --rm -t -v $HOME/.cargo/registry/:/root/.cargo/registry -v "$(pwd)":/volume clux/muslrust:stable cargo build --release --target aarch64-unknown-linux-musl
+          # Use the clux/muslrust image to ensure we have the right target
+          docker run --rm -t \
+            -v $HOME/.cargo/registry/:/root/.cargo/registry \
+            -v "$(pwd)":/volume \
+            clux/muslrust:stable \
+            sh -c "rustup target add aarch64-unknown-linux-musl && cargo build --release --target aarch64-unknown-linux-musl"
 
       - name: Create archive
         run: |
